@@ -6,6 +6,9 @@ object GameBlockFactory {
 
     fun floor() = GameBlock(GameTileRepository.FLOOR)
 
-    fun wall() = GameBlock(GameTileRepository.WALL)
+    fun wall() = GameBlock.createWith(EntityFactory.newWall())
 
+    fun stairsDown() = GameBlock.createWith(EntityFactory.newStairsDown())
+
+    fun stairsUp() = GameBlock.createWith(EntityFactory.newStairsUp())
 }
