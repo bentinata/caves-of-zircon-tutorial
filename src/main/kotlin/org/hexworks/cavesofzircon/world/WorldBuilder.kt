@@ -3,9 +3,13 @@ package org.hexworks.cavesofzircon.world
 import org.hexworks.cavesofzircon.blocks.GameBlock
 import org.hexworks.cavesofzircon.builders.GameBlockFactory
 import org.hexworks.cavesofzircon.extensions.sameLevelNeighborsShuffled
+import org.hexworks.cavesofzircon.wfc.Main
+import org.hexworks.cavesofzircon.wfc.OverlappingModel
 import org.hexworks.zircon.api.Positions
 import org.hexworks.zircon.api.data.impl.Position3D
 import org.hexworks.zircon.api.data.impl.Size3D
+import java.io.File
+import javax.imageio.ImageIO
 
 class WorldBuilder(private val worldSize: Size3D) {
 
@@ -19,6 +23,33 @@ class WorldBuilder(private val worldSize: Size3D) {
     }
 
     fun build(visibleSize: Size3D): World = World(blocks, visibleSize, worldSize)
+
+    fun wfc(): WorldBuilder {
+        var model = OverlappingModel(
+                bitmap = ImageIO.read(File("/home/bentinata/seed.png")),
+                N = 3,
+                width = width,
+                height = worldSize.yLength,
+                periodicInput = true,
+                periodicOutput = false,
+                symmetry = 8,
+                ground = 0
+        )
+
+        do {
+            val seed = Main.random.nextInt()
+            val finished = model.run(seed, 0)
+        } while (!finished)
+
+        val coordinates = model.coordinates()
+        forAllPositions { pos ->
+            val (x, y, z) = pos
+            blocks[pos] = if (coordinates[x][y] == "ff000000") {
+                GameBlockFactory.wall()
+            } else GameBlockFactory.floor()
+        }
+        return this
+    }
 
     private fun randomizeTiles(): WorldBuilder {
         forAllPositions { pos ->

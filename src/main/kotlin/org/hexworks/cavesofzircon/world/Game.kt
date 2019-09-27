@@ -9,7 +9,7 @@ class Game(val world: World) {
 
         fun create(worldSize: Size3D = GameConfig.WORLD_SIZE,
                    visibleSize: Size3D = GameConfig.WORLD_SIZE) = Game(WorldBuilder(worldSize)
-                .makeCaves()
+                .wfc()
                 .build(visibleSize))
     }
 }
